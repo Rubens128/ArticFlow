@@ -1,0 +1,32 @@
+.input {
+    width: clamp(300px, 28dvw, 600px);
+    height: clamp(50px, 8dvh, 120px);
+    border: solid #A3BFD9 1px;
+    border-radius: 20px;
+    background-color: rgba(11, 27, 43, 0.8);
+    color: white;
+    font-size: clamp(1.2dvw);
+    padding-left: 20px;
+    text-align: left;
+    outline: none;
+
+    &::placeholder{
+        color: #A3BFD9;
+        font-family: var(--font-inter);
+    }
+}
+
+.input:focus{
+    border: 1px solid transparent;
+
+    background: 
+    linear-gradient(rgb(11,27,43), rgb(11,27,43)) padding-box,
+    linear-gradient(to right, #00E3A0, #00A9E0) border-box;
+    
+    border-radius: 20px;
+
+    &::placeholder{
+        color: white;
+    }
+   
+}

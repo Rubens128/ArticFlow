@@ -1,0 +1,28 @@
+.body{
+    height: 100dvh;
+    width: 100dvw;
+    display: flex;
+    justify-content: center;
+}
+
+.div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.divInfoInputs{
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+}
+
+.divPageInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+    color: white;
+    align-items: center;
+    font-size: clamp(1rem, 1.5dvw, 5rem);
+    font-family: var(--font-inter);
+}

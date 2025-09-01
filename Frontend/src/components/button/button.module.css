@@ -1,0 +1,24 @@
+.button {
+    width: clamp(300px, 30dvw, 600px);
+    height: clamp(50px, 9dvh, 120px);
+    background: linear-gradient(to right, #00E3A0E0, #00C0C5E0, #00A9E0E0);
+    text-align: center;
+    color: white;
+    font-family: var(--font-inter);
+    font-weight: bold;
+    font-size: clamp(1.8rem, 2.34dvw, 2.8125rem);
+    border: 0px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+}
+
+.button:hover{
+    background: linear-gradient(to right, #00E3A0, #00C0C5, #00A9E0);
+    transform: scale(1.02);
+}
+
+.button:active{
+    transform: scale(0.98);
+    background: linear-gradient(to right, #00B78AD9, #008BBED9);
+}
