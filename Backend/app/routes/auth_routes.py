@@ -134,7 +134,7 @@ def login():
         result = cursor.fetchone()
 
         if not result:
-            return jsonify({"erro": "Usuário ou senha inexistentes. Acesso negado!"}), 401
+            return jsonify({"error": "Usuário ou senha inexistentes. Acesso negado!"}), 401
 
         user_id, hashed_password = result
 
@@ -154,7 +154,7 @@ def login():
 
             exp_time = datetime.now(timezone.utc) + timedelta(hours=2)
 
-            response = jsonify({"acesso": "Usuário e senha corretos."})
+            response = jsonify({"message": "Usuário e senha corretos."})
             response.set_cookie(
                 "token",
                 token,
@@ -167,7 +167,7 @@ def login():
             return response
         
         else:
-            return jsonify({"acesso": "Usuário ou senha inexistentes. Acesso negado!"}), 401
+            return jsonify({"message": "Usuário ou senha inexistentes. Acesso negado!"}), 401
 
     except Exception as e:
 

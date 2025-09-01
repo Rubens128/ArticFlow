@@ -1,9 +1,11 @@
 import { Button } from "../../components/button/button"
 import { Input } from "../../components/input/input"
 import { Logo } from "../../components/logo/logo"
+import { useNavigate } from "react-router-dom";
 import styles from "./register.module.css"
 
 export default function Register() {
+  const navigate = useNavigate();
 
   return (
     <form action="" onSubmit={async (e) => {
@@ -36,7 +38,9 @@ export default function Register() {
         if(res.status == 201){
 
           console.log("Usuário registrado com sucesso!");
-          alert("Usuário registrado com sucesso!");
+          
+          navigate("/");
+
           return;
         }
 
@@ -84,7 +88,7 @@ export default function Register() {
             onInput={(e) => {e.currentTarget.setCustomValidity("");}}></Input>
 
             <Input text="Username" type="text" name="username" id="username" autoComplete="username" 
-            spellCheck={false} minLength={3} maxLength={30} onKeyDown= {(e) => {
+            spellCheck={false} minLength={3} maxLength={32} onKeyDown= {(e) => {
               if(e.key === " "){
                 e.preventDefault();
               }
@@ -116,7 +120,7 @@ export default function Register() {
             <Input text="Confirm Password" type="password" name="confirmPassword" id="confirmPassword" 
             autoComplete="new-password" spellCheck={false} onInput={(e) => {
               e.currentTarget.setCustomValidity("");
-              
+
               const confirmPassword = e.currentTarget;
               const password = document.getElementById("password") as HTMLInputElement;
 
