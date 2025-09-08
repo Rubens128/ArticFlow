@@ -1,0 +1,34 @@
+.sideBar{
+    width: 8dvh;
+    height: 92dvh;
+    background-color: #0B1B2B;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.sideBarIcons{
+    display: flex;
+    flex-direction: column;
+    gap:20px;
+}
+
+.sideBarIconStyle{
+    color: white;
+    transition: all 0.5s ease;
+}
+
+.sideBarIconStyle:hover{
+    color: #ffffffB2;
+    scale: 0.9;
+}
+
+.sideBarIconStyleActive{
+    pointer-events: none;
+    color: white;
+    background: linear-gradient(to right, #00E3A0, #00A9E0);
+    padding: 5px;
+    border-radius: 360px;
+}

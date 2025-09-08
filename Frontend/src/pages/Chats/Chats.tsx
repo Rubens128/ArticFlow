@@ -1,12 +1,9 @@
 import styles from "./Chats.module.css"
 import { Logo } from "../../components/logo/logo"
-import { LuMenu } from "react-icons/lu";
-import { PiChats } from "react-icons/pi";
-import { HiOutlineUsers } from "react-icons/hi2";
-import { IoSettingsOutline } from "react-icons/io5";
-import { PiUserCircleLight } from "react-icons/pi";
-
-
+import { SideBar } from "../../components/sideBar/sideBar"
+import { Input } from "../../components/input/input"
+import { IoSearchOutline } from "react-icons/io5";
+import { FaCircleUser } from "react-icons/fa6";
 
 export default function Login() {
 
@@ -16,26 +13,28 @@ export default function Login() {
         <Logo classNameImage={"w-[clamp(1rem,3dvw,4rem)]"} classNameDiv={"text-[clamp(1rem,1.5dvw,3rem)] font-bold gap-[10px]"}></Logo>
       </div>
       <div className={styles.content}>
-        <div className={styles.sideBar}>
-          <div className={styles.sideBarIcons}>
-          <LuMenu size="2.5dvw" color="white"></LuMenu>
-          <PiChats size="2.25dvw" color="white"></PiChats>
-          <HiOutlineUsers size="2.25dvw" color="white"></HiOutlineUsers>
-          </div>
-          <div className={styles.sideBarIcons}>
-          <IoSettingsOutline size="2.45dvw" color="white"></IoSettingsOutline>
-          <PiUserCircleLight size="2.7dvw" color="white"></PiUserCircleLight>
-          </div>
-
-        </div>
+        <SideBar currentIcon={1}></SideBar>
         <div className={styles.backGroundColorChatsDiv}>
           <div className={styles.chatsDiv}>
-
+            <h1>Chats</h1>
+            <div className={styles.inputWrapper}>
+              <Input text="Search Chats" customSize="!w-[100%] !h-[clamp(1rem,2.5dvw,3rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"></Input>
+              <IoSearchOutline className={styles.inputWrapperIcon}></IoSearchOutline>
+            </div>
+            <div className={styles.chatsDivChat}>
+              <FaCircleUser className="w-[clamp(2rem,3dvw,3rem)] h-auto"></FaCircleUser>
+              <div className={styles.chatsDivChatInfo}>
+                <div className={styles.chatsDivChatInfoNameDate}>
+                  <h1>Penguino</h1>
+                  <p>08/09/2025</p>
+                </div>
+                <p>Olá Penguino</p>
+              </div>
+            </div>
           </div>
         </div>
         <div className={styles.chatInfo}>
           <div className={styles.chatInfoHeader}>
-
           </div>
           <div className={styles.chatInfoMessages}>
   

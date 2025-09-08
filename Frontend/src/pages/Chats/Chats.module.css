@@ -20,23 +20,6 @@
     flex-direction: row;
 }
 
-.sideBar{
-    width: 8dvh;
-    height: 92dvh;
-    background-color: #0B1B2B;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px;
-}
-
-.sideBarIcons{
-    display: flex;
-    flex-direction: column;
-    gap:20px;
-}
-
 .backGroundColorChatsDiv{
     width: 28dvw;
     height: 92dvh;
@@ -46,8 +29,62 @@
 .chatsDiv{
     height: 100%;
     width: 100%;
+    display: flex;
+    flex-direction: column;
     background-color: #0E2235;
     border-radius: 30px 0px 0px 30px;
+    color: white;
+    font-family: var(--font-inter);
+    font-size: clamp(2rem, 2dvw ,3rem);
+    font-weight: bold;
+    padding: 10px 20px;
+    gap: 15px;
+}
+.chatsDivChat{
+    display: flex;
+    flex-direction: row;
+    background-color: #142F49;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    gap: 10px;
+}
+.chatsDivChatInfo{
+    font-size: clamp(0.5rem, 0.7dvw, 1.5rem);
+    font-weight: 400;
+    color: #ffffffD9;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 5px;
+}
+
+.chatsDivChatInfoNameDate{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.chatsDivChatInfoNameDate h1{
+    color: white;
+    font-size: clamp(0.5rem, 0.85dvw, 1.5rem);
+}
+.inputWrapper{
+    position: relative;
+    height: auto;
+    width: auto;
+}
+
+.inputWrapperIcon {
+  position: absolute;
+  left: 90%;
+  top: 28%;
+  pointer-events: none;
+  width: clamp(1rem, 1.5dvw ,3rem);
+}
+
+.inputWrapper Input{
+    padding-right: 40px;
 }
 
 .chatInfo{
