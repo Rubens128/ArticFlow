@@ -1,15 +1,12 @@
 .div{
     display: flex;
     flex-direction: row;
-    font-size: clamp(1rem, 2dvw, 5rem);
     color: white;
-    gap: 25px;
     font-family: var(--font-inter);
     align-items: center;
     justify-content: center;
 }
 
 .image{
-    width: clamp(1rem, 5dvw , 8rem);
     aspect-ratio: 128/113;
 }

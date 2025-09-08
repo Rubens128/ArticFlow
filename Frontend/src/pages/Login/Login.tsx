@@ -69,7 +69,7 @@ export default function Login() {
       <main className={styles.body}>
         <div className={styles.div}>
           <div className={styles.divPageInfo}>
-            <Logo></Logo>
+            <Logo classNameImage={"w-[clamp(1rem,5dvw ,8rem)]"} classNameDiv={"text-[clamp(1rem,3.5dvw,5rem)] gap-[25px]"}></Logo>
             <h1>Sign In</h1>
           </div>
           <div className={styles.divInfoInputs}>
