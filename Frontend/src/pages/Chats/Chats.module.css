@@ -40,6 +40,7 @@
     padding: 10px 20px;
     gap: 15px;
 }
+
 .chatsDivChat{
     display: flex;
     flex-direction: row;
@@ -49,9 +50,11 @@
     padding: 10px;
     gap: 10px;
 }
+
 .chatsDivChatInfo{
     font-size: clamp(0.5rem, 0.7dvw, 1.5rem);
     font-weight: 400;
+    font-family: var(--font-inter);
     color: #ffffffD9;
     display: flex;
     flex-direction: column;
@@ -68,7 +71,9 @@
 .chatsDivChatInfoNameDate h1{
     color: white;
     font-size: clamp(0.5rem, 0.85dvw, 1.5rem);
+    font-family: var(--font-inter);
 }
+
 .inputWrapper{
     position: relative;
     height: auto;
@@ -98,16 +103,146 @@
 .chatInfoHeader{
     width: 100%;
     height: 8%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     background-color: #0E2235;
+    color: white;
+    padding: 0px 20px 0px 10px;
+}
+
+.chatInfoHeaderProfile{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.chatInfoHeaderProfileInfo{
+    display: flex;
+    flex-direction: column;
+    font-size: clamp(0.5rem, 0.8dvw ,1rem);
+    font-weight: bold;
+    font-family: var(--font-inter);
+    justify-content: center;
+    gap: 5px;
+}
+
+.chatInfoHeaderProfileInfo p{
+    font-size: clamp(0.5rem, 0.65dvw ,1rem);
+    color: #ffffffD9;
+}
+
+.chatInfoHeaderIcon{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 15px;
 }
 
 .chatInfoMessages{
     width: 100%;
     height: 84%;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    min-height: 0;
+    gap: 5px;
+    padding: 5px;
+}
+
+.chatInfoMessagesSpacer{
+    flex: 1 0 auto;
+}
+
+.chatInfoMessageImageText{
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    gap: 3px;
+}
+
+.chatInfoMessagesMessageUser{
+    width:fit-content;
+    max-width: 50%;
+    padding: 2px 10px;
+    color: #FFFFFFD8;
+    font-family: var(--font-inter);
+    background: linear-gradient(to right,#00B78AB3, #008BBEB3);
+    border-radius: 15px 0px 15px 15px;
+}
+
+.chatInfoMessagesMessageOther{
+    width:fit-content;
+    max-width: 50%;
+    padding: 2px 10px;
+    color: #FFFFFFD8;
+    font-family: var(--font-inter);
+    background-color: #0B1B2B;
+    border-radius: 0px 15px 15px 15px;
+}
+
+.chatInfoMessagesMessageContent{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+}
+
+.chatInfoMessagesMessageContentWithName{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 3px;
+}
+
+.messageName{
+    color: white;
+    font-size: clamp(0.75rem, 0.90dvw ,1rem);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.messageText{
+    width: 100%;
+    font-size: clamp(0.75rem, 0.90dvw ,1rem);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.messageTime{
+    font-size: clamp(0.5rem, 0.65dvw ,0.75rem);
+    margin-top: auto;
+    color: #ffffffa8;
 }
 
 .chatInfoSendMessage{
     width: 100%;
     height: 8%;
+    display: flex;
+    flex-direction: row;
+    color: white;
     background-color: #0E2235;
+    align-items: center;
+    padding: 0px 10px;
+    gap: 10px;
+}
+
+.inputWrapperSendMessage{
+    position: relative;
+    height: auto;
+    width: 100%;
+}
+
+.inputWrapperSendMessageIcon {
+  position: absolute;
+  left: 96%;
+  top: 28%;
+  pointer-events: none;
+  width: clamp(1rem, 1.5dvw ,3rem);
+}
+
+.inputWrapperSendMessage Input{
+    padding-right: 40px;
 }
