@@ -14,6 +14,8 @@ __pycache__/
 *.db
 *.sqlite3
 
+venv311/
+.venv311/
 .venv/
 env/
 venv/
@@ -30,3 +32,5 @@ Thumbs.db
 *.env
 .env.local
 .env.*
+
+/testes/

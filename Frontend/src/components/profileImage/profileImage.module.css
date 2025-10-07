@@ -1,0 +1,9 @@
+.imageDiv{
+    aspect-ratio: 1/1;
+    border-radius: 360px;
+    overflow: hidden;
+}
+
+.image{
+    object-fit: cover;
+}
