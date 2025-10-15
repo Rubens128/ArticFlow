@@ -14,6 +14,7 @@ def jwt_required(f):
             
             payload = jwt.decode(token, current_app.config["SECRET_KEY"], algorithms=["HS256"], leeway=10)
             g.user_id = payload["user_id"]
+            g.nick = payload["nick"]
 
         except jwt.ExpiredSignatureError:
             return jsonify({"erro": "Token expirado. Faça login novamente."}), 401

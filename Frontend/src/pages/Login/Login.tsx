@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Logo } from "../../components/logo/logo";
 import { Input } from "../../components/input/input";
 import { Button } from "../../components/button/button";
@@ -11,6 +11,8 @@ export default function Login() {
   // if(state?.message){
   //   alert(state.message);
   // }
+
+  const navigate = useNavigate();
 
   return(
     <form action="" onSubmit={async (e) => {
@@ -42,7 +44,8 @@ export default function Login() {
         if(res.status == 200){
 
           console.log("Login realizado com sucesso!");
-          alert("Login realizado com sucesso!")
+          alert("Login realizado com sucesso!");
+          navigate("/Chats", { replace: true });
           return;
         }
 

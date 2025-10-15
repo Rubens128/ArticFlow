@@ -41,7 +41,7 @@
     gap: 15px;
 }
 
-.chatsDivChat{
+.chatsDivChatSelected{
     display: flex;
     flex-direction: row;
     background-color: #142F49;
@@ -49,6 +49,17 @@
     width: 100%;
     padding: 10px;
     gap: 10px;
+}
+
+.chatsDivChat{
+    display: flex;
+    flex-direction: row;
+    background-color: #0E2235;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    gap: 10px;
+    cursor: pointer;
 }
 
 .chatsDivChatInfo{
@@ -62,16 +73,32 @@
     gap: 5px;
 }
 
-.chatsDivChatInfoNameDate{
+.chatsDivChatInfoValues{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
-.chatsDivChatInfoNameDate h1{
+.chatsDivChatInfoValues h1{
     color: white;
     font-size: clamp(0.5rem, 0.85dvw, 1.5rem);
     font-family: var(--font-inter);
+}
+
+.chatsDivChatInfoValuesNewMessagesTime{
+    font-weight: bolder;
+    font-size: clamp(0.5rem, 0.75dvw, 1.5rem);
+    color: #ececec;
+    padding: 1px 5px;
+    border-radius: 20px;
+}
+
+.chatsDivChatInfoValuesNewMessages{
+    font-weight: bolder;
+    background: linear-gradient(to right,#00B78A, #008BBE);
+    padding: 1px 5px;
+    border-radius: 20px;
+    font-size: clamp(0.5rem, 0.85dvw, 1.75rem);
 }
 
 .inputWrapper{
@@ -149,6 +176,20 @@
     min-height: 0;
     gap: 5px;
     padding: 5px;
+}
+
+.chatInfoMessages::-webkit-scrollbar{
+    width:7px;
+}
+
+.chatInfoMessages::-webkit-scrollbar-track{
+    background: transparent;
+}
+
+.chatInfoMessages::-webkit-scrollbar-thumb{
+    background: radial-gradient(ellipse at top,#00B78AB3, #008BBEB3);
+    border-radius: 30px;
+    border: 2px solid transparent;
 }
 
 .chatInfoMessagesSpacer{

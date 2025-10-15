@@ -150,7 +150,7 @@ def login():
             }
 
             token = jwt.encode(payload, current_app.config["SECRET_KEY"], algorithm="HS256")
-
+            
             exp_time = datetime.now(timezone.utc) + timedelta(hours=2)
 
             response = jsonify({"message": "Usuário e senha corretos."})
@@ -159,7 +159,7 @@ def login():
                 token,
                 httponly=True,
                 secure=False,
-                samesite="None",
+                samesite="Lax",
                 expires=exp_time
             )
 
@@ -195,7 +195,7 @@ def chats():
 
     Dbconnection = current_app.db_connection
     cursor = Dbconnection.cursor()
-
+    
     permissions = ["owner", "member"]
 
     try:
@@ -243,7 +243,7 @@ def chats():
     
     return jsonify({"message": "Chat registrado com sucesso!", "chat_id": chat_id}), 201
 
-@auth_routes.route("/messages",methods=["POST"])
+@auth_routes.route("/messagesAdd",methods=["POST"])
 
 @jwt_required
 
@@ -273,10 +273,11 @@ def messages():
         cursor.execute("""
             INSERT INTO messages (chat_id, sender_id, content)
             VALUES (%s, %s, %s)
-            RETURNING message_id
+            RETURNING message_id, to_char(sent_at, 'DD/MM/YYYY')
         """, (chat_id, user_id, message))
 
-        message_id = cursor.fetchone()[0]
+        returningSQL = cursor.fetchone()
+        message_info = (*returningSQL, g.nick)
 
         Dbconnection.commit()
 
@@ -290,70 +291,94 @@ def messages():
 
         cursor.close()
 
-    return jsonify({"message": "Mensagem registrada com sucesso!", "message_id": message_id}), 201
+    return jsonify({"message": "Mensagem registrada com sucesso!", "message_info": message_info}), 201
 
-@auth_routes.route("/chats",methods=["GET"])
+@auth_routes.route("/chatsGet",methods=["GET"])
 
 @jwt_required
 
 def chatsGet():
-
+    
     Dbconnection = current_app.db_connection
     cursor = Dbconnection.cursor()
 
     user_id = g.user_id
-
-    chats_dict = dict()
+    
+    chats_list = list()
 
     try:
-        
         cursor.execute("""
-            SELECT chat_id FROM chat_members
+            SELECT chat_id, new_messages FROM chat_members
             WHERE user_id = %s
         """, (user_id,))
 
-        chats_ids = cursor.fetchall()
-        chats_ids = [row[0] for row in chats_ids]
+        infoChatMembers = cursor.fetchall()
+        chats_ids = [row[0] for row in infoChatMembers]
+        
+        if not chats_ids:
+            return jsonify([])
 
         cursor.execute("""
-            SELECT chat_id FROM messages
+            SELECT distinct on (chat_id) 
+            chat_id, to_char(sent_at, 'DD/MM/YYYY'), content FROM messages
             WHERE chat_id IN %s
-            GROUP BY chat_id
-            ORDER BY MAX(sent_at) DESC
+            ORDER BY chat_id, sent_at desc
         """, (tuple(chats_ids), ))
 
         chats_ids_in_order = cursor.fetchall()
-        chats_ids_in_order = [row[0] for row in chats_ids_in_order]
 
-        for index, chat_id in enumerate(chats_ids_in_order):
+        for id in chats_ids:
+            exists = False
+            for chats in chats_ids_in_order:
+                if id in chats:
+                    exists = True
+                    break
+            
+            if not exists:
+                chats_ids_in_order.append((id, None, None))
 
+        for index, chat in enumerate(chats_ids_in_order):
+            
             cursor.execute("""
                 SELECT group_name, group_image FROM chats
                 WHERE chat_id = %s
-            """, (chat_id,))
+            """, (chat[0],))
 
             chat_info = cursor.fetchone()
 
+            new_messages = 0
+
+            for infoChat in infoChatMembers:
+
+                if(infoChat[0] == chat[0]):
+
+                    new_messages = infoChat[1]
+                    break
+                
+            
             if not chat_info:
                 continue
 
-            chats_dict[index] = {
-                "chat_id": chat_id,
+            chats_list.append({
+                "chat_id": chat[0],
                 "chat_name": chat_info[0],
-                "chat_image": chat_info[1]
-            }
+                "chat_image": chat_info[1],
+                "chat_sentAt": chat[1],
+                "chat_content": chat[2],
+                "new_messages": new_messages
+            })
 
     except Exception as e:
-
+        print(str(e))
         return jsonify({"error": "Erro ao coletar os chats", "details": str(e)}), 400
     
     finally:
 
         cursor.close()
-    
-    return jsonify(chats_dict)
 
-@auth_routes.route("/messages",methods=["GET"])
+    return jsonify(chats_list)
+
+@auth_routes.route("/messagesGet",methods=["GET"])
 
 @jwt_required
 
@@ -364,12 +389,14 @@ def messagesGet():
     chat_id = data.get("chat_id", "")
     user_id = g.user_id
 
-    if not chat_id:
+    if not chat_id or isinstance(chat_id, int):
         return jsonify({"error": "Erro ao encontrar o chat"}), 400
     
     Dbconnection = current_app.db_connection
     cursor = Dbconnection.cursor()
 
+    print(chat_id)
+    
     try:
 
         cursor.execute("""
@@ -381,27 +408,32 @@ def messagesGet():
             return jsonify({"error": "Você não faz parte desse chat ou chat inexistente"}), 400
 
         cursor.execute("""
-            SELECT u.nick, m.content, m.sent_at
+            SELECT nick, content, sent_at, main FROM (
+            SELECT message_id, u.nick, m.content, to_char(sent_at, 'DD/MM/YYYY') AS sent_at, u.user_id = %s as main
             FROM messages m
             LEFT JOIN users u ON m.sender_id = u.user_id
             WHERE m.chat_id = %s
-            ORDER BY m.sent_at ASC
-            LIMIT 20
-        """, (chat_id,))
+            ORDER BY message_id DESC
+            LIMIT 50
+            )
+            ORDER BY message_id ASC
+        """, (user_id, chat_id,))
 
         messages = cursor.fetchall()
 
-        messages_dict = dict()
+        messages_list = list()
 
         for index, messageInfo in enumerate(messages):
 
-            messages_dict[index] = {
+            messages_list.append({
+                "index": index,
                 "nick": messageInfo[0] if messageInfo[0] else "unknown user",
                 "content": messageInfo[1],
-                "sent_at": messageInfo[2]
-            }
+                "sent_at": messageInfo[2],
+                "main": messageInfo[3]
+            })
 
-        return jsonify(messages_dict)
+        return jsonify(messages_list)
     
     except Exception as e:
 
