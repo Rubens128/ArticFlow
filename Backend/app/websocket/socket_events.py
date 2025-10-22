@@ -119,6 +119,12 @@ def handle_send_message(data):
 
         message_id, sent_at = cursor.fetchone()
 
+        cursor.execute("""
+            UPDATE chat_members
+            SET new_messages = new_messages + 1
+            WHERE chat_id = %s AND user_id != %s
+        """, (chat_id, user_id))
+
         Dbconnection.commit()
 
     except Exception as e:

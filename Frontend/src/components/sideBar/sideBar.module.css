@@ -1,18 +1,47 @@
 .sideBar{
-    width: 8dvh;
+    position: absolute;
+    width: 3.5dvw;
     height: 92dvh;
     background-color: #0B1B2B;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: left;
     justify-content: space-between;
-    padding: 20px;
+    padding: 20px 0px 0px 10px;
+    font-size: 0px;
+    z-index: 10;
+    transition: width 0.25s ease, font-size 0.25s ease;
+}
+
+.sideBar.expand{
+    width: 10dvw;
+    border-radius: 0px 10px 10px 0px;
+    color: white;
+    font-family: var(--font-inter);
+    font-size: clamp(0.5rem, 0.75dvw ,1rem);
+    font-weight: bold;
+}
+
+.spacer{
+    width: 3.5dvw;
+}
+
+.sideBarDiv{
+    width: 100%;
 }
 
 .sideBarIcons{
     display: flex;
     flex-direction: column;
     gap:20px;
+}
+
+.sideBarIconsLink{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    position: static;
 }
 
 .sideBarIconStyle{
@@ -31,4 +60,5 @@
     background: linear-gradient(to right, #00E3A0, #00A9E0);
     padding: 5px;
     border-radius: 360px;
+    scale:1.2;
 }

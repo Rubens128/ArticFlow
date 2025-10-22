@@ -52,6 +52,7 @@ export default function Chats() {
   const [currentChat, setCurrentChat] = useState<number>(-1);
   const [chatMessages, setChatMessages] = useState<Record<number, Message[]>>([]);
   const [authChecked, setAuthChecked] = useState<boolean>(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
   const navigate = useNavigate();
   const chatRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -358,6 +359,9 @@ export default function Chats() {
     chatEndRef.current?.scrollIntoView({ block: "end", behavior: "auto"});
 
   }, [currentChat, chatMessages[currentChat]?.length]);
+
+
+  
   
   return(
     <main className={styles.body}>
@@ -406,9 +410,10 @@ export default function Chats() {
                     </p>
                   </div>
                   <div className={styles.chatsDivChatInfoValues}>
-                    <p>{chat.chat_content ? chat.chat_content : ""}</p>
+                    <p className={styles.chatsDivChatInfoValuesContent}>{chat.chat_content ? chat.chat_content : ""}</p>
                     <p className={chat.new_messages >= 1 ? styles.chatsDivChatInfoValuesNewMessages : ""}>
-                      { chat.new_messages >= 1 ? chat.new_messages : ""}
+                      { chat.new_messages >= 1 && chat.new_messages <= 99 ? chat.new_messages : ""}
+                      { chat.new_messages >= 99 ? "99+" : ""}
                     </p>
                   </div>
                 </div>
@@ -422,17 +427,17 @@ export default function Chats() {
           <div className={styles.chatInfoHeader}>
             <div className={styles.chatInfoHeaderProfile}>
               <ProfileImage src="profileImages/Penguino.png" alt="Imagem de perfil da IA, Penguino" 
-              width="clamp(2rem, 3dvw, 3.5rem)"></ProfileImage>
+              width="clamp(2rem, 2.5dvw, 3.5rem)"></ProfileImage>
               <div className={styles.chatInfoHeaderProfileInfo}>
                 <h1>Penguino</h1>
                 <p>Penguino, você</p>
               </div>
             </div>
             <div className={styles.chatInfoHeaderIcon}>
-              <FaCode className="w-[clamp(1rem,2dvw,2rem)] h-auto"></FaCode>
-              <IoVideocamOutline className="w-[clamp(1rem,2.25dvw,2rem)] h-auto"></IoVideocamOutline>
-              <FiPhone className="w-[clamp(1rem,1.75dvw,2rem)] h-auto" onClick={() => setCallPainel(true)}></FiPhone>
-              <VscSearch className="w-[clamp(1rem,1.6dvw,2rem)] h-auto"></VscSearch>
+              <FaCode className="w-[clamp(1rem,1.35dvw,2rem)] h-auto"></FaCode>
+              <IoVideocamOutline className="w-[clamp(1rem,1.7dvw,2rem)] h-auto"></IoVideocamOutline>
+              <FiPhone className="w-[clamp(1rem,1.1dvw,2rem)] h-auto" onClick={() => setCallPainel(true)}></FiPhone>
+              <VscSearch className="w-[clamp(1rem,0.95dvw,2rem)] h-auto"></VscSearch>
             </div>
           </div>
           <div className={styles.chatInfoMessages} ref={chatRef}>
@@ -444,8 +449,7 @@ export default function Chats() {
                     <div key={i} className={styles.chatInfoMessagesMessageUser} 
                       style={{alignSelf:"flex-end"}}>
                       <div className={styles.chatInfoMessagesMessageContent}>
-                        <p className={styles.messageText}> {m.content} </p>
-                        <p className={styles.messageTime}> {m.sent_at} </p>
+                        <p className={styles.messageText}> {m.content} <span className={styles.messageTime}>{m.sent_at} </span> </p>
                       </div>
                     </div>
                   );
@@ -459,9 +463,8 @@ export default function Chats() {
                         <div className={styles.chatInfoMessagesMessageContent}>
                           <div className={styles.chatInfoMessagesMessageContentWithName}>
                             <p className={styles.messageName}> {m.nick} </p>
-                            <p className={styles.messageText}> {m.content} </p>
                           </div>
-                          <p className={styles.messageTime}> {m.sent_at} </p>
+                          <p className={styles.messageText}> {m.content} <span className={styles.messageTime}>{m.sent_at} </span> </p>
                         </div>
                       </div>
                     </div>
@@ -474,9 +477,9 @@ export default function Chats() {
 
           </div>
           <div className={styles.chatInfoSendMessage}>
-            <HiOutlineEmojiHappy className="w-[clamp(1rem,1.5dvw,2rem)] h-auto"></HiOutlineEmojiHappy>
-            <FiPaperclip className="w-[clamp(1rem,1.5dvw,2rem)] h-auto"></FiPaperclip>
-            <AiOutlineCode className="w-[clamp(1rem,1.5dvw,2rem)] h-auto"></AiOutlineCode>
+            <HiOutlineEmojiHappy className="w-[clamp(1rem,1.4dvw,2rem)] h-auto"></HiOutlineEmojiHappy>
+            <FiPaperclip className="w-[clamp(1rem,1.4dvw,2rem)] h-auto"></FiPaperclip>
+            <AiOutlineCode className="w-[clamp(1rem,1.4dvw,2rem)] h-auto"></AiOutlineCode>
             <div className={styles.inputWrapperSendMessage}>
               {/* <form onSubmit={handleSend}>
                 <Input text={isLoading? "Esperando resposta da IA" : "Message"} disabled= {isLoading} customSize="!w-[100%] !h-[clamp(1rem,2dvw,2rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"
