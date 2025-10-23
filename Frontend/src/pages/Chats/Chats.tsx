@@ -12,12 +12,13 @@ import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { FiPaperclip } from "react-icons/fi";
 import { AiOutlineCode } from "react-icons/ai";
 import { AiOutlineSend } from "react-icons/ai";
-import { useEffect, useRef, useState, useLayoutEffect } from "react";
+import { useEffect, useRef, useState, useLayoutEffect, useCallback } from "react";
 import { askAI } from "../../api/ai";
 import { ProfileImage } from "../../components/profileImage/profileImage"
 import { CallPanel } from "../../components/callPanel/callPanel";
 import { useNavigate } from "react-router-dom";
 import { getSocket } from "../../api/socket";
+import { flushSync } from "react-dom";
 
 type Msg = {
   role: "user" | "assistant";
@@ -47,7 +48,7 @@ export default function Chats() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [callPainel, setCallPainel] = useState<boolean>(true);
+  const [callPainel, setCallPainel] = useState<boolean>(false);
   const [chats, setChats] = useState<Chat[]>([]);
   const [currentChat, setCurrentChat] = useState<number>(-1);
   const [chatMessages, setChatMessages] = useState<Record<number, Message[]>>([]);
@@ -56,6 +57,9 @@ export default function Chats() {
   const navigate = useNavigate();
   const chatRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const needChangeScrollRef = useRef(false);
+  const prevBottomRef = useRef(0);
 
   useEffect(() =>{
         
@@ -168,6 +172,52 @@ export default function Chats() {
 
   }, [])
 
+  const loadMessages = useCallback(async (chatIndex: number, last_message: number = -1) =>{
+
+      try{
+        const res = await fetch(`/api/messagesGet?chat_id=${chatIndex}&message_id=${last_message}`, {
+
+            credentials: "include",
+        })
+
+        if(res.status == 401){
+
+          navigate("/", { replace: true });
+          return;
+
+        }
+
+        if (res.status == 400){
+
+          const error = await res.json();
+          
+          alert("Erro ao carregar messages, espere uns minutos e tente novamente" );
+          
+          console.log(error);
+          
+          return;
+        }
+
+        const data = await res.json();
+
+        console.log(data);
+
+        setChatMessages((prev) => ({
+          ...prev,
+          [chatIndex]: [
+            ...data,
+            ...(prev[chatIndex] || [])
+          ],
+        }));
+
+      } catch (error) {
+
+        setCurrentChat(-1);
+        alert("Erro ao carregar mensagens do chat" + error);
+      }
+
+    }, [navigate]);
+
   useEffect(() => {
     (async () => {
       
@@ -184,13 +234,20 @@ export default function Chats() {
 
         if (res.status == 400){
 
+          const error = await res.json();
+
           alert("Erro ao carregar chats, espere uns minutos e tente novamente");
+          
+          console.log(error);
+
           return;
         }
 
         const data = await res.json();
 
         setChats(data);
+
+        await data.map((chat:Chat) => loadMessages(chat.chat_id))
 
         setAuthChecked(true);
 
@@ -201,49 +258,6 @@ export default function Chats() {
 
     })();
   }, [navigate] );
-
-  useEffect (() => { 
-    (async () => {
-
-      if ((currentChat === -1) || (chatMessages[currentChat]?.length >= 50)){
-        return;
-      }
- 
-      try{
-        const res = await fetch(`/api/messagesGet?chat_id=${currentChat}`, {
-
-            credentials: "include",
-        })
-
-        if(res.status == 401){
-
-          navigate("/", { replace: true });
-          return;
-
-        }
-
-        if (res.status == 400){
-
-          alert("Erro ao carregar messages, espere uns minutos e tente novamente" );
-          return;
-        }
-
-        const data = await res.json();
-
-        setChatMessages((prev) => ({
-          ...prev,
-          [currentChat]: data
-        }));
-
-      } catch (error) {
-
-        setCurrentChat(-1);
-        alert("Erro ao carregar mensagens do chat" + error);
-      }
-
-    })();
-  }, [currentChat] );
-
 
   useEffect(() => {
 
@@ -341,12 +355,19 @@ export default function Chats() {
   }
   
   useLayoutEffect(() =>{
+
     const refDiv = chatRef.current;
     if(!refDiv) return;
 
     if(isNearBottom(refDiv, 150)){
       
       chatEndRef.current?.scrollIntoView({ block: "end", behavior: "auto"});
+    
+    } else if (needChangeScrollRef.current){
+
+      refDiv.scrollTop = refDiv.scrollHeight - prevBottomRef.current;
+
+      needChangeScrollRef.current = false;
     }
 
   }, [chatMessages[currentChat]?.length])
@@ -358,10 +379,31 @@ export default function Chats() {
 
     chatEndRef.current?.scrollIntoView({ block: "end", behavior: "auto"});
 
-  }, [currentChat, chatMessages[currentChat]?.length]);
+  }, [currentChat]);
 
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) =>{
+    const element = e.currentTarget;
+    const threshold = 20;
 
+    if(!isLoadingMessages && (element.scrollTop) <= threshold && !needChangeScrollRef.current){
+      
+      needChangeScrollRef.current = true;
+
+      prevBottomRef.current = element.scrollHeight - element.scrollTop;
+
+      setIsLoadingMessages(true)
+
+      if(chatMessages[currentChat].length > 0){
+        
+        console.log(chatMessages[currentChat].at(-1)?.index);
+
+        loadMessages(currentChat, chatMessages[currentChat][0].index);
   
+      }
+
+      setIsLoadingMessages(false)
+    }
+  }
   
   return(
     <main className={styles.body}>
@@ -440,7 +482,7 @@ export default function Chats() {
               <VscSearch className="w-[clamp(1rem,0.95dvw,2rem)] h-auto"></VscSearch>
             </div>
           </div>
-          <div className={styles.chatInfoMessages} ref={chatRef}>
+          <div className={styles.chatInfoMessages} ref={chatRef} onScroll={handleScroll}>
             <div className={styles.chatInfoMessagesSpacer}> </div>
 
               {chatMessages[currentChat]?.map((m,i) => {

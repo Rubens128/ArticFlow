@@ -387,6 +387,7 @@ def messagesGet():
     data = request.args
 
     chat_id = data.get("chat_id", "")
+    lastMessage_id = data.get("message_id", "")
     user_id = g.user_id
 
     if not chat_id or isinstance(chat_id, int):
@@ -398,6 +399,18 @@ def messagesGet():
     print(chat_id)
     
     try:
+        
+        if(lastMessage_id != "-1"):
+            
+            cursor.execute("""
+                SELECT 1 FROM messages 
+                WHERE chat_id = %s AND message_id < %s
+            """, (chat_id, lastMessage_id))
+
+            if not cursor.fetchone():
+
+                return jsonify([])
+        
 
         cursor.execute("""
             SELECT 1 FROM chat_members
@@ -407,17 +420,28 @@ def messagesGet():
         if not cursor.fetchone():
             return jsonify({"error": "Você não faz parte desse chat ou chat inexistente"}), 400
 
-        cursor.execute("""
-            SELECT nick, content, sent_at, main FROM (
-            SELECT message_id, u.nick, m.content, to_char(sent_at, 'DD/MM/YYYY') AS sent_at, u.user_id = %s as main
+        lastMessage_string = ""
+
+        params = [user_id, chat_id]
+
+        if (lastMessage_id != "-1"):
+            
+            lastMessage_string = f"AND m.message_id < %s"
+            params.append(lastMessage_id)
+        
+        query = f"""
+            SELECT nick, content, sent_at, main, message_id FROM (
+            SELECT m.message_id, u.nick, m.content, to_char(sent_at, 'DD/MM/YYYY') AS sent_at, u.user_id = %s as main
             FROM messages m
             LEFT JOIN users u ON m.sender_id = u.user_id
-            WHERE m.chat_id = %s
+            WHERE m.chat_id = %s {lastMessage_string}
             ORDER BY message_id DESC
             LIMIT 50
             )
             ORDER BY message_id ASC
-        """, (user_id, chat_id,))
+        """
+
+        cursor.execute(query, tuple(params))
 
         messages = cursor.fetchall()
 
@@ -426,7 +450,7 @@ def messagesGet():
         for index, messageInfo in enumerate(messages):
 
             messages_list.append({
-                "index": index,
+                "index": messageInfo[4],
                 "nick": messageInfo[0] if messageInfo[0] else "unknown user",
                 "content": messageInfo[1],
                 "sent_at": messageInfo[2],
