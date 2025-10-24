@@ -1,9 +1,8 @@
-import styles from "./Chats.module.css"
+import styles from "./Main.module.css"
 import { Logo } from "../../components/logo/logo"
 import { SideBar } from "../../components/sideBar/sideBar"
 import { Input } from "../../components/input/input"
 import { IoSearchOutline } from "react-icons/io5";
-import { FaCircleUser } from "react-icons/fa6";
 import { FaCode } from "react-icons/fa6";
 import { IoVideocamOutline } from "react-icons/io5";
 import { FiPhone } from "react-icons/fi";
@@ -18,7 +17,7 @@ import { ProfileImage } from "../../components/profileImage/profileImage"
 import { CallPanel } from "../../components/callPanel/callPanel";
 import { useNavigate } from "react-router-dom";
 import { getSocket } from "../../api/socket";
-import { flushSync } from "react-dom";
+import { Chats } from "../../components/chats/chats"
 
 type Msg = {
   role: "user" | "assistant";
@@ -34,7 +33,7 @@ type Message = {
   main: boolean;
 }
 
-type Chat = {
+export type Chat = {
   chat_id: number;
   chat_name: string;
   chat_image: string | null;
@@ -43,7 +42,7 @@ type Chat = {
   new_messages: number;
 }
 
-export default function Chats() {
+export default function Main() {
   
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
@@ -219,47 +218,6 @@ export default function Chats() {
     }, [navigate]);
 
   useEffect(() => {
-    (async () => {
-      
-      try{
-        const res = await fetch("/api/chatsGet", {
-          credentials: "include",
-        })
-
-        if (res.status == 401){
-
-          navigate("/", { replace: true });
-          return;
-        }
-
-        if (res.status == 400){
-
-          const error = await res.json();
-
-          alert("Erro ao carregar chats, espere uns minutos e tente novamente");
-          
-          console.log(error);
-
-          return;
-        }
-
-        const data = await res.json();
-
-        setChats(data);
-
-        await data.map((chat:Chat) => loadMessages(chat.chat_id))
-
-        setAuthChecked(true);
-
-      } catch{
-      
-        navigate("/", {replace: true});
-      }
-
-    })();
-  }, [navigate] );
-
-  useEffect(() => {
 
     const socket = getSocket();
     if(!socket.connected) socket.connect();
@@ -417,54 +375,10 @@ export default function Chats() {
 
       <div className={styles.content}>
         <SideBar currentIcon={1}></SideBar>
-        <div className={styles.backGroundColorChatsDiv}>
-          <div className={styles.chatsDiv}>
-            <h1>Chats</h1>
-            <div className={styles.inputWrapper}>
-              <Input text="Search Chats" customSize="!w-[100%] !h-[clamp(1rem,2.5dvw,3rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"></Input>
-              <IoSearchOutline className={styles.inputWrapperIcon}></IoSearchOutline>
-            </div>
-            <div className={currentChat == -1 ? styles.chatsDivChatSelected : styles.chatsDivChat}
-            onClick={() => setCurrentChat(-1)}>
-              <ProfileImage src="profileImages/Penguino.png" alt="Imagem de perfil da IA, Penguino" 
-              width="clamp(2rem, 3dvw, 3.5rem)"></ProfileImage>
-              <div className={styles.chatsDivChatInfo}>
-                <div className={styles.chatsDivChatInfoValues}>
-                  <h1>Penguino</h1>
-                  <p>08/09/2025</p>
-                </div>
-                <p>Olá Penguino</p>
-              </div>
-            </div>
 
-            {chats?.map( (chat,i) => {
-              
-              return (
-              <div key={chat.chat_id} className={currentChat == chat.chat_id ? styles.chatsDivChatSelected : styles.chatsDivChat} 
-                onClick={() => setCurrentChat(chat.chat_id)}>
-                <ProfileImage src={chat.chat_image ? chat.chat_image : "profileImages/Penguino.png"} alt="Imagem de perfil da IA, Penguino" 
-                width="clamp(2rem, 3dvw, 3.5rem)"></ProfileImage>
-                <div className={styles.chatsDivChatInfo}>
-                  <div className={styles.chatsDivChatInfoValues}>
-                    <h1>{chat.chat_name}</h1>
-                    <p className={chat.new_messages >= 1 ? styles.chatsDivChatInfoValuesNewMessagesTime : ""}>
-                      {chat.chat_sentAt ? chat.chat_sentAt : ""}
-                    </p>
-                  </div>
-                  <div className={styles.chatsDivChatInfoValues}>
-                    <p className={styles.chatsDivChatInfoValuesContent}>{chat.chat_content ? chat.chat_content : ""}</p>
-                    <p className={chat.new_messages >= 1 ? styles.chatsDivChatInfoValuesNewMessages : ""}>
-                      { chat.new_messages >= 1 && chat.new_messages <= 99 ? chat.new_messages : ""}
-                      { chat.new_messages >= 99 ? "99+" : ""}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              )
-            })}
+        <Chats chats={chats} setChats={setChats} setAuthChecked={setAuthChecked} currentChat={currentChat} 
+        setCurrentChat={setCurrentChat} loadMessages={loadMessages}></Chats>
 
-          </div>
-        </div>
         <div className={styles.chatInfo}>
           <div className={styles.chatInfoHeader}>
             <div className={styles.chatInfoHeaderProfile}>
@@ -541,6 +455,8 @@ export default function Chats() {
             </div>
           </div>
         </div>
+
+        
       </div>
     </main>
 

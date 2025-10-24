@@ -1,0 +1,68 @@
+.body{
+    display: flex;
+    flex-direction: column;
+}
+
+.header{
+    width: 100dvw;
+    height: 8dvh;
+    background-color: #0B1B2B;
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    padding-left: 15px;
+}
+
+.content{
+    width: 100dvw;
+    height: 92dvh;
+    display: flex;
+    flex-direction: row;
+}
+
+.backGroundColorChatsDiv{
+    width: 26.5dvw;
+    height: 92dvh;
+    background-color: #0B1B2B
+}
+
+.friendsDiv{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #0E2235;
+    border-radius: 30px 0px 0px 30px;
+    color: white;
+    font-family: var(--font-inter);
+    font-size: clamp(2rem, 2dvw ,3rem);
+    font-weight: bold;
+    padding: 10px 20px;
+    gap: 15px;
+}
+
+.inputWrapper{
+    position: relative;
+    height: auto;
+    width: auto;
+}
+
+.inputWrapperIcon {
+  position: absolute;
+  left: 90%;
+  top: 28%;
+  pointer-events: none;
+  width: clamp(1rem, 1.5dvw ,3rem);
+}
+
+.inputWrapper Input{
+    padding-right: 40px;
+}
+
+.friendsInfo{
+    display: flex;
+    flex-direction: column;
+    width: 70dvw;
+    height: 92dvh;
+    justify-content: space-between;
+}

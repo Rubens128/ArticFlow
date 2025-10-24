@@ -1,0 +1,110 @@
+.backGroundColorChatsDiv{
+    width: 26.5dvw;
+    height: 92dvh;
+    background-color: #0B1B2B
+}
+
+.chatsDiv{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #0E2235;
+    border-radius: 30px 0px 0px 30px;
+    color: white;
+    font-family: var(--font-inter);
+    font-size: clamp(2rem, 2dvw ,3rem);
+    font-weight: bold;
+    padding: 10px 20px;
+    gap: 15px;
+}
+
+.chatsDivChatSelected{
+    display: flex;
+    flex-direction: row;
+    background-color: #142F49;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    gap: 10px;
+    min-height: 9dvh;
+    max-height: 9dvh;
+}
+
+.chatsDivChat{
+    display: flex;
+    flex-direction: row;
+    background-color: #0E2235;
+    border-radius: 10px;
+    width: 100%;
+    min-height: 9dvh;
+    max-height: 9dvh;
+    padding: 10px;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.chatsDivChatInfo{
+    font-size: clamp(0.5rem, 0.7dvw, 1.5rem);
+    font-weight: 400;
+    font-family: var(--font-inter);
+    color: #ffffffD9;
+    display: flex;
+    flex-direction: column;
+    width: 82%;
+    gap: 5px;
+}
+
+.chatsDivChatInfoValues{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    overflow: hidden;
+    align-items: center;
+}
+
+.chatsDivChatInfoValues h1{
+    color: white;
+    font-size: clamp(0.5rem, 0.85dvw, 1.5rem);
+    font-family: var(--font-inter);
+}
+
+.chatsDivChatInfoValuesContent{
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 90%;
+}
+
+.chatsDivChatInfoValuesNewMessagesTime{
+    font-weight: bolder;
+    font-size: clamp(0.5rem, 0.75dvw, 1.5rem);
+    color: #ececec;
+    padding: 1px 5px;
+    border-radius: 20px;
+}
+
+.chatsDivChatInfoValuesNewMessages{
+    font-weight: bolder;
+    background: linear-gradient(to right,#00B78A, #008BBE);
+    padding: 1px 5px;
+    border-radius: 20px;
+    font-size: clamp(0.5rem, 0.85dvw, 1.75rem);
+}
+
+.inputWrapper{
+    position: relative;
+    height: auto;
+    width: auto;
+}
+
+.inputWrapperIcon {
+  position: absolute;
+  left: 90%;
+  top: 28%;
+  pointer-events: none;
+  width: clamp(1rem, 1.5dvw ,3rem);
+}
+
+.inputWrapper Input{
+    padding-right: 40px;
+}

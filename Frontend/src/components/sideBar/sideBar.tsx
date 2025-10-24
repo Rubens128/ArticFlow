@@ -23,11 +23,11 @@ export function SideBar({ currentIcon }: sideBarProps){
             <Link to="" className={styles.sideBarIconsLink}>
               <LuMenu size="2dvw" onClick={() => setExpand(!expand)} className={styles.sideBarIconStyle}></LuMenu>
             </Link>
-            <Link to={currentIcon == 1? "": "/"} className={styles.sideBarIconsLink}>
+            <Link to={currentIcon == 1? "": "/chats"} className={styles.sideBarIconsLink}>
               <PiChats size="1.75dvw" className={currentIcon == 1? styles.sideBarIconStyleActive: styles.sideBarIconStyle} ></PiChats>
               <p>{expand ? "conversas" : ""}</p>
             </Link>
-            <Link to={currentIcon == 2? "": "/"} className={styles.sideBarIconsLink}>
+            <Link to={currentIcon == 2? "": "/friends"} className={styles.sideBarIconsLink}>
               <HiOutlineUsers size="1.75dvw" className={currentIcon == 2? styles.sideBarIconStyleActive: styles.sideBarIconStyle}></HiOutlineUsers>
               <p>{expand ? "amigos" : ""}</p>
             </Link>
