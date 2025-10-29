@@ -1,0 +1,192 @@
+.friendsDiv{
+    display: flex;
+    flex-direction: column;
+    width: 70dvw;
+    height: 92dvh;
+    background-color: #0E2235;
+    border-left: 15px solid #0B1B2B;
+    padding: 10px 20px;
+    gap: 40px;
+}
+
+.friendsDivHeader{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.friendsDivHeaderTitle{
+    display: flex;
+    flex-direction: row;
+    color: white;
+    font-size: clamp(1rem, 1.4dvw, 2rem);
+    font-weight: bold;
+    font-family: var(--font-inter);
+    text-align: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.friendsDivHeaderButton{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+
+.friendsDivHeaderButtonStyle{
+    width: fit-content;
+    color: #ffffffd1;
+    font-family: var(--font-inter);
+    font-size: clamp(1rem, 1dvw, 2rem);
+    padding: 10px 15px;
+    border-radius: 20px;
+    transition: all 0.5s ease;
+    cursor: pointer;
+}
+
+.friendsDivHeaderButtonStyle:hover{
+    color: white;
+    background-color: #10283f;
+}
+
+.friendsDivHeaderButtonStyle.selected{
+    width: fit-content;
+    color: #ffffff;
+    font-weight: bold;
+    background-color: #142F49;
+    cursor: default;
+}
+
+.friendsDivInputWrapper{
+    position: relative;
+    height: auto;
+    width: auto;
+    font-weight: bold;
+    color: white;
+}
+
+.friendsDivInputWrapperIcon {
+  position: absolute;
+  pointer-events: none;
+  width: clamp(1rem, 1.5dvw ,3rem);
+  height: clamp(1rem, 1.5dvw ,3rem);;
+  right: 32%;
+  top: 18%;
+}
+
+.inputWrapper Input{
+    padding-right: 40px;
+}
+
+.friendsDivList{
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
+    font-family: var(--font-inter);
+    font-size: clamp(1rem, 1dvw, 2rem);
+    overflow-y: auto;
+    gap: 20px;
+}
+
+.friendsDivListScrollBar{
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+
+.friendsDivListScrollBar::-webkit-scrollbar{
+    width: 7px;
+}
+
+.friendsDivListScrollBar::-webkit-scrollbar-track{
+    background: transparent;
+}
+
+.friendsDivListScrollBar::-webkit-scrollbar-thumb{
+    background: radial-gradient(ellipse at top,#00B78AB3, #008BBEB3);
+    border-radius: 30px;
+    border: 2px solid transparent;
+}
+
+.friendsDivListFriend{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 15px;
+    border-top: 1px solid #142F49;
+    width: 70%;
+    transition: all 0.5s ease;
+    color: #ffffffd1;
+    justify-content: space-between;
+}
+
+.friendsDivListFriend:hover{
+    border-radius: 20px;
+    background-color: #142F49;
+    font-weight: bold;
+}
+
+.friendsDivListFriendActive:hover{
+    border-radius: 0px;
+    background-color: inherit;
+    font-weight: normal;
+}
+
+.friendsDivListFriendMenu{
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: #0B1B2B;
+    color: #ffffffd1;
+    font-size: clamp(0.25rem, 0.75dvw, 1rem);
+    padding: 10px;
+    align-items: left;
+    border-radius: 20px;
+    left: 110%;
+    gap: 5px;
+    width: 10.5dvw;
+}
+
+.friendsDivListFriendMenuOption{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+    gap: 5px;
+    padding: 5px;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+.friendsDivListFriendMenuOption:hover{
+    color: white;
+    background-color: #0E2235;
+    transition: all 0.5s ease;
+}
+
+.friendsDivListFriendFlexOrganization{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.friendsDivListFriendInfo{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-family: var(--font-inter);
+}
+
+.friendsDivListFriendInfoNick{
+    color: white;
+    font-size: clamp(0.5rem, 0.9dvw, 1rem);
+}
+
+.friendsDivListFriendInfoDescription{
+    color: #ffffffd1;
+    font-size: clamp(0.5rem, 0.7dvw, 1rem);
+}

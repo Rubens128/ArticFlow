@@ -1,0 +1,50 @@
+.emojiMenuDiv{
+    position: fixed;
+    z-index: 1000;
+}
+
+.emojiMenuDivPicker{
+    height: 55dvh !important; 
+    width: 20dvw !important;
+    --epr-bg-color: #0E2235 !important;
+    --epr-category-label-bg-color: #0E2235 !important;
+    --epr-hover-bg-color: #333 !important;
+    --epr-focus-bg-color: #444 !important;
+    --epr-text-color: #fff !important;
+    --epr-search-input-bg-color: rgba(11, 27, 43, 0.8) !important;
+}
+
+.emojiMenuDivPicker input {
+  border: 1px solid #A3BFD9 !important;
+  border-radius: 20px !important;
+  &::placeholder{
+        color: #A3BFD9 !important;
+        font-family: var(--font-inter) !important;
+    }
+}
+
+.emojiMenuDivPicker input:focus{
+    border: 1px solid transparent !important;
+
+    background: 
+    linear-gradient(rgb(11,27,43), rgb(11,27,43)) padding-box,
+    linear-gradient(to right, #00E3A0, #00A9E0) border-box !important;
+
+    &::placeholder{
+        color: white;
+    }
+}
+
+.emojiMenuDivPicker div::-webkit-scrollbar{
+    width:7px !important;
+}
+
+.emojiMenuDivPicker div::-webkit-scrollbar-track{
+    background: transparent !important;
+}
+
+.emojiMenuDivPicker div::-webkit-scrollbar-thumb{
+    background: radial-gradient(ellipse at top,#00B78AB3, #008BBEB3) !important;
+    border-radius: 30px !important;
+    border: 2px solid transparent !important;
+}

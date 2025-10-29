@@ -11,6 +11,7 @@ import { AiOutlineSend } from "react-icons/ai";
 import { useRef, useState, useLayoutEffect} from "react";
 import { ProfileImage } from "../../components/profileImage/profileImage"
 import { getSocket } from "../../api/socket";
+import { EmojiMenu } from "../emojiMenu/emojiMenu";
 import type { Message } from "../../pages/Main/Main";
 
 interface ChatMessageProps {
@@ -31,6 +32,11 @@ export function ChatMessages({ chatMessages, currentChat, loadMessages, input, s
     const prevBottomRef = useRef(0);
 
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(false);
+    const [emojiMenu, setEmojiMenu] = useState<boolean>(false);
+    const [inputSearchMessages, setInputSearchMessages] = useState<String>("");
+    const [searchMessagesActivated, setSearchMessagesActivated] = useState<boolean>(false);
+
+    const emojiDivRef = useRef<HTMLDivElement | null>(null);
 
     // const [isLoading, setIsLoading] = useState(false);
     // const [messages, setMessages] = useState<Msg[]>([]);
@@ -76,21 +82,21 @@ export function ChatMessages({ chatMessages, currentChat, loadMessages, input, s
 
         if(!isLoadingMessages && (element.scrollTop) <= threshold && !needChangeScrollRef.current){
         
-        needChangeScrollRef.current = true;
+          needChangeScrollRef.current = true;
 
-        prevBottomRef.current = element.scrollHeight - element.scrollTop;
+          prevBottomRef.current = element.scrollHeight - element.scrollTop;
 
-        setIsLoadingMessages(true)
+          setIsLoadingMessages(true)
 
-        if(chatMessages[currentChat].length > 0){
-            
-            console.log(chatMessages[currentChat].at(-1)?.index);
+          if( chatMessages[currentChat] &&chatMessages[currentChat].length > 0){
+              
+              console.log(chatMessages[currentChat].at(-1)?.index);
 
-            loadMessages(currentChat, chatMessages[currentChat][0].index);
-    
-        }
+              loadMessages(currentChat, chatMessages[currentChat][0].index);
+      
+          }
 
-        setIsLoadingMessages(false)
+          setIsLoadingMessages(false)
         }
     }
 
@@ -168,11 +174,15 @@ export function ChatMessages({ chatMessages, currentChat, loadMessages, input, s
                 <p>Penguino, você</p>
               </div>
             </div>
-            <div className={styles.chatInfoHeaderIcon}>
+            <div className={`${styles.chatInfoHeaderIcon} ${searchMessagesActivated? styles.searchIconActivated : ""}`} >
               <FaCode className="w-[clamp(1rem,1.35dvw,2rem)] h-auto"></FaCode>
               <IoVideocamOutline className="w-[clamp(1rem,1.7dvw,2rem)] h-auto"></IoVideocamOutline>
               <FiPhone className="w-[clamp(1rem,1.1dvw,2rem)] h-auto" onClick={() => setCallPainel(true)}></FiPhone>
-              <VscSearch className="w-[clamp(1rem,0.95dvw,2rem)] h-auto"></VscSearch>
+              <VscSearch className="w-[clamp(1rem,0.95dvw,2rem)] h-auto"
+               onClick={() => setSearchMessagesActivated(!searchMessagesActivated)}></VscSearch>
+
+              {searchMessagesActivated? <Input text="Digite a mensagem para buscar" 
+              customSize="!w-[70%] !h-[clamp(1rem,1.75dvw,2rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"></Input> : ""}
             </div>
           </div>
           <div className={styles.chatInfoMessages} ref={chatRef} onScroll={handleScroll}>
@@ -212,7 +222,14 @@ export function ChatMessages({ chatMessages, currentChat, loadMessages, input, s
 
           </div>
           <div className={styles.chatInfoSendMessage}>
-            <HiOutlineEmojiHappy className="w-[clamp(1rem,1.4dvw,2rem)] h-auto"></HiOutlineEmojiHappy>
+            
+            <div style={{position: "relative"}} ref={emojiDivRef}>
+              <HiOutlineEmojiHappy className="w-[clamp(1rem,1.4dvw,2rem)] h-auto" 
+              onClick={() => setEmojiMenu(!emojiMenu)}></HiOutlineEmojiHappy>
+
+              {emojiMenu? <EmojiMenu emojiDivRef={emojiDivRef} setInput={setInput}/> : ""}
+            </div>
+
             <FiPaperclip className="w-[clamp(1rem,1.4dvw,2rem)] h-auto"></FiPaperclip>
             <AiOutlineCode className="w-[clamp(1rem,1.4dvw,2rem)] h-auto"></AiOutlineCode>
             <div className={styles.inputWrapperSendMessage}>
@@ -225,7 +242,7 @@ export function ChatMessages({ chatMessages, currentChat, loadMessages, input, s
               </form> */}
 
               <form onSubmit={HandleSend}>
-                <Input text={"Message"}  customSize="!w-[100%] !h-[clamp(1rem,2dvw,2rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"
+                <Input text={"Message"} customSize="!w-[100%] !h-[clamp(1rem,2dvw,2rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"
                 onChange={(e) => setInput(e.target.value)} value={input}></Input>
                 <button type="submit">
                   <AiOutlineSend className={styles.inputWrapperSendMessageIcon}></AiOutlineSend>

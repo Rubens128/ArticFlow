@@ -1,10 +1,11 @@
 import styles from "./Chats.module.css"
 import { Input } from "../../components/input/input"
 import { IoSearchOutline } from "react-icons/io5";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ProfileImage } from "../../components/profileImage/profileImage"
 import { useNavigate } from "react-router-dom";
-import type { Chat } from "../../pages/Main/Main";
+import type { Chat, friendType } from "../../pages/Main/Main";
+import { useLocation } from "react-router-dom";
 
 interface ChatProps {
     chats: Chat[];
@@ -13,13 +14,21 @@ interface ChatProps {
     currentChat: number;
     setCurrentChat: React.Dispatch<React.SetStateAction<number>>;
     loadMessages: (chatIndex: number, last_message?: number) => Promise<any>;
+    setCurrentIcon: React.Dispatch<React.SetStateAction<number>>;
+    friends: friendType[];
 }
 
-export function Chats({ chats, setChats, setAuthChecked, currentChat, setCurrentChat, loadMessages }: ChatProps){
+export function Chats({ chats, setChats, setAuthChecked, currentChat, setCurrentChat, 
+  loadMessages, setCurrentIcon }: ChatProps){
 
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const [inputSearchChats, setInputSearchChats] = useState<string>("");
 
     useEffect(() => {
+
+
         (async () => {
           
           try{
@@ -44,7 +53,7 @@ export function Chats({ chats, setChats, setAuthChecked, currentChat, setCurrent
               return;
             }
     
-            const data = await res.json();
+            const data:Chat[] = await res.json();
     
             setChats(data);
     
@@ -58,18 +67,20 @@ export function Chats({ chats, setChats, setAuthChecked, currentChat, setCurrent
           }
     
         })();
-      }, [navigate] );
+      }, [] );
 
     return (
         <div className={styles.backGroundColorChatsDiv}>
           <div className={styles.chatsDiv}>
             <h1>Chats</h1>
             <div className={styles.inputWrapper}>
-              <Input text="Search Chats" customSize="!w-[100%] !h-[clamp(1rem,2.5dvw,3rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"></Input>
+              <Input text="Search Chats" 
+              customSize="!w-[100%] !h-[clamp(1rem,2.5dvw,3rem)] !text-[clamp(0.5rem,0.8dvw,2rem)]"
+              onChange={(e) => setInputSearchChats(e.target.value)} value={inputSearchChats}></Input>
               <IoSearchOutline className={styles.inputWrapperIcon}></IoSearchOutline>
             </div>
             <div className={currentChat == -1 ? styles.chatsDivChatSelected : styles.chatsDivChat}
-            onClick={() => setCurrentChat(-1)}>
+            onClick={() => {setCurrentIcon(1); setCurrentChat(-1)}}>
               <ProfileImage src="profileImages/Penguino.png" alt="Imagem de perfil da IA, Penguino" 
               width="clamp(2rem, 3dvw, 3.5rem)"></ProfileImage>
               <div className={styles.chatsDivChatInfo}>
@@ -82,10 +93,12 @@ export function Chats({ chats, setChats, setAuthChecked, currentChat, setCurrent
             </div>
 
             {chats?.map( (chat) => {
+
+              if(!chat.chat_name.toLocaleLowerCase().startsWith(inputSearchChats.toLocaleLowerCase())) return;
               
               return (
               <div key={chat.chat_id} className={currentChat == chat.chat_id ? styles.chatsDivChatSelected : styles.chatsDivChat} 
-                onClick={() => setCurrentChat(chat.chat_id)}>
+                onClick={() =>{setCurrentIcon(1); setCurrentChat(chat.chat_id)}}>
                 <ProfileImage src={chat.chat_image ? chat.chat_image : "profileImages/Penguino.png"} alt="Imagem de perfil da IA, Penguino" 
                 width="clamp(2rem, 3dvw, 3.5rem)"></ProfileImage>
                 <div className={styles.chatsDivChatInfo}>

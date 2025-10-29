@@ -340,7 +340,7 @@ def chatsGet():
         for index, chat in enumerate(chats_ids_in_order):
             
             cursor.execute("""
-                SELECT group_name, group_image FROM chats
+                SELECT group_name, group_image, friends FROM chats
                 WHERE chat_id = %s
             """, (chat[0],))
 
@@ -358,15 +358,45 @@ def chatsGet():
             
             if not chat_info:
                 continue
+            
+            if(not chat_info[2]):
 
-            chats_list.append({
-                "chat_id": chat[0],
-                "chat_name": chat_info[0],
-                "chat_image": chat_info[1],
-                "chat_sentAt": chat[1],
-                "chat_content": chat[2],
-                "new_messages": new_messages
-            })
+                chats_list.append({
+                    "chat_id": chat[0],
+                    "chat_name": chat_info[0],
+                    "chat_image": chat_info[1],
+                    "chat_sentAt": chat[1],
+                    "chat_content": chat[2],
+                    "new_messages": new_messages
+                })
+            
+            else:
+
+                cursor.execute("""
+                    SELECT user_id FROM chat_members
+                    WHERE chat_id = %s AND user_id != %s
+                """, (chat[0], user_id))
+
+                friend_id = cursor.fetchone()[0]
+
+                cursor.execute("""
+                    SELECT u.nick, up.profile_image
+                    FROM users u
+                    LEFT JOIN user_profile up
+                    ON u.user_id = up.user_id
+                    WHERE u.user_id = %s
+                """, (friend_id,))
+
+                friend_info = cursor.fetchone()
+
+                chats_list.append({
+                    "chat_id": chat[0],
+                    "chat_name": friend_info[0],
+                    "chat_image": friend_info[1],
+                    "chat_sentAt": chat[1],
+                    "chat_content": chat[2],
+                    "new_messages": new_messages
+                })
 
     except Exception as e:
         print(str(e))
@@ -396,8 +426,6 @@ def messagesGet():
     Dbconnection = current_app.db_connection
     cursor = Dbconnection.cursor()
 
-    print(chat_id)
-    
     try:
         
         if(lastMessage_id != "-1"):
@@ -465,4 +493,122 @@ def messagesGet():
     
     finally:
         
+        cursor.close()
+
+@auth_routes.route("/friendsGet",methods=["GET"])
+
+@jwt_required
+
+def friendsGet():
+
+    data = request.args
+
+    user_id = g.user_id
+
+    try:
+
+        Dbconnection = current_app.db_connection
+        cursor = Dbconnection.cursor()
+
+        allFriends = {
+            "friends": list(),
+            "pendingFriends": list(),
+            "waitingFriends": list()
+        }
+
+        cursor.execute("""
+            SELECT f.user_id_2, u2.nick, f.status, up.description, up.profile_image, f.friends_chat_id 
+            FROM friends f
+            LEFT JOIN users u2 on f.user_id_2 = u2.user_id
+            LEFT JOIN user_profile up on u2.user_id = up.user_id
+            WHERE f.user_id_1 = %s AND status != 'refused'
+        """, (user_id, ))
+
+        friends = cursor.fetchall()
+
+        for friend in friends:
+
+            statusFriend = ""
+
+            if friend[2] == "accepted":
+
+                statusFriend = "friends"
+            
+            elif friend[2] == "pending":
+                
+                statusFriend = "pendingFriends"
+
+            elif friend[2] == "waiting":
+
+                statusFriend = "waitingFriends"
+
+            else:
+
+                continue
+
+            allFriends[statusFriend].append({
+                "friend_id": friend[0],
+                "nick": friend[1],
+                "status": friend[2],
+                "description": friend[3],
+                "profile_image": friend[4],
+                "friends_chat_id": friend[5]
+            })
+        
+        return jsonify(allFriends)
+
+    except Exception as e:
+
+        return jsonify({"error": "Erro ao coletar informações sobre os amigos", "details": str(e)}), 400
+    
+    finally:
+        
+        cursor.close()
+
+@auth_routes.route("/searchUser",methods=["GET"])
+
+@jwt_required
+
+def searchUser():
+
+    data = request.args
+
+    nick = data.get("nick", "")
+    user_id = g.user_id
+
+    try:
+        
+        Dbconnection = current_app.db_connection
+        cursor = Dbconnection.cursor()
+
+        cursor.execute("""
+            SELECT u.user_id, u.nick, up.profile_image
+            FROM users u
+            LEFT JOIN user_profile up
+            ON u.user_id = up.user_id
+            WHERE u.nick = %s AND u.user_id != %s
+        """, (nick, user_id))
+
+        userInfo = cursor.fetchone()
+
+        if(userInfo):
+
+            userInfoDict = {
+                "user_id": userInfo[0],
+                "nick": userInfo[1],
+                "profile_image": userInfo[2]
+            }
+
+            return jsonify(userInfoDict)
+
+        else:
+
+            return jsonify("")
+    
+    except Exception as e:
+
+        return jsonify({"error": "Erro ao buscar usuário por nick", "details": str(e)}), 400
+    
+    finally:
+
         cursor.close()
